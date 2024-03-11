@@ -21,16 +21,26 @@ class DBClient {
   }
 
   async nbUsers() {
-    const db = this.client.db(this.database);
-    const userCollection = db.collection('users');
-    const userCount = await userCollection.countDocuments();
-    return userCount;
+    try {
+      await this.client.connect();
+      const db = this.client.db(this.database);
+      const userCollection = db.collection('users');
+      const userCount = await userCollection.countDocuments();
+      return userCount;
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async nbFiles() {
-    const filesCollection = this.client.db(this.database).collection('files');
-    const fileCount = await fileCollection.countDocuments();
-    return filesCount;
+    try {
+      await this.client.connect();
+      const filesCollection = this.client.db(this.database).collection('files');
+      const fileCount = await filesCollection.countDocuments();
+      return filesCount;
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
