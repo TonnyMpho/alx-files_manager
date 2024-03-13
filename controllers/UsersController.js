@@ -3,7 +3,6 @@ const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
 const sha1 = require('sha1');
 
-
 const UsersController = {
   async postNew(req, res) {
     const { email, password } = req.body;
@@ -16,7 +15,7 @@ const UsersController = {
     }
 
     try {
-      const existingUser = await dbClient.usersCollection.findOne({ email });
+      const existingUser = await dbClient.users.findOne({ email });
       if (existingUser) {
         return res.status(400).json({ error: 'Already exist' });
       }
@@ -27,7 +26,7 @@ const UsersController = {
         password: hashedPassword,
       };
 
-      const result = await dbClient.usersCollection.insertOne(newUser);
+      const result = await dbClient.users.insertOne(newUser);
       newUser.id = result.insertedId;
 
       res.status(201).json({ email: newUser.email, id: newUser.id });
@@ -50,7 +49,7 @@ const UsersController = {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
-      const user = await dbClient.usersCollection.findOne({ _id: userId });
+      const user = await dbClient.users.findOne({ _id: userId });
       if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });
       }

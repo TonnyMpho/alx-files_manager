@@ -19,7 +19,8 @@ class DBClient {
         this.connected = true;
       }
     });
-    this.database = database;
+    this.users = this.client.db(database).collection('users');
+    this.files = this.client.db(database).collection('files');
   }
 
   isAlive() {
@@ -27,14 +28,12 @@ class DBClient {
   }
 
   async nbUsers() {
-    const usersCollection = this.client.db(this.database).collection('users');
-    const count = await usersCollection.countDocuments();
+    const count = await this.users.countDocuments();
     return count;
   }
 
   async nbFiles() {
-    const filesCollection = this.client.db(this.database).collection('files');
-    const count = await filesCollection.countDocuments();
+    const count = await this.files.countDocuments();
     return count;
   }
 }
