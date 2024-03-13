@@ -22,7 +22,7 @@ class DBClient {
     this.database = database;
   }
 
-  async isAlive() {
+  isAlive() {
     return this.connected;
   }
 
