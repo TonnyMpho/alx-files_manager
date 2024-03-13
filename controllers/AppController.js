@@ -13,7 +13,7 @@ class AppController {
     const userCount = await dbClient.nbUsers();
     const filesCount = await dbClient.nbFiles();
 
-    res.send(200).json({ users: userCount, files: filesCount });
+    res.status(200).json({ users: userCount, files: filesCount });
   }
 }
 
