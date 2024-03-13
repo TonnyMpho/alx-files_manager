@@ -12,6 +12,12 @@ async function getUserIdFromToken(token) {
   return userId;
 }
 
+try {
+  fs.mkdirSync(FOLDER_PATH, { recursive: true });
+} catch (error) {
+  console.error('Error creating directory:', error);
+}
+
 const FilesController = {
   async postUpload(req, res) {
     const { 'x-token': token } = req.headers;
@@ -68,7 +74,7 @@ const FilesController = {
       };
 
       // Insert new file document into the database
-      const result = await dbClient.filesCollection.insertOne(newFile);
+      const result = await dbClient.files.insertOne(newFile);
       newFile.id = result.insertedId;
 
       return res.status(201).json(newFile);
