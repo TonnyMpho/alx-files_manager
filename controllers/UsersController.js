@@ -1,4 +1,4 @@
-// const { ObjectId } = require('mongodb');
+const { ObjectId } = require('mongodb');
 const sha1 = require('sha1');
 const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
@@ -49,7 +49,7 @@ const UsersController = {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
-      const user = await dbClient.users.findOne({ _id: userId });
+      const user = await dbClient.users.findOne({ _id: ObjectId(userId) });
       if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });
       }

@@ -10,7 +10,9 @@ const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
 const FilesController = {
   async postUpload(req, res) {
     const { 'x-token': token } = req.headers;
-    const { name, type, parentId = 0, isPublic = false, data } = req.body;
+    const {
+      name, type, parentId = 0, isPublic = false, data,
+    } = req.body;
 
     // Check if required fields are provided
     if (!name) {
@@ -69,7 +71,7 @@ const FilesController = {
       console.error('Error uploading file:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-  }
+  },
 };
 
 module.exports = FilesController;
