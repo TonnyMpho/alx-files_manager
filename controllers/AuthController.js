@@ -47,7 +47,7 @@ const AuthController = {
 
     await redisClient.del(`auth_${token}`);
     return res.status(204).end();
-  }
+  },
 };
 
 module.exports = AuthController;
