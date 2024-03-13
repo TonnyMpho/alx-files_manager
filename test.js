@@ -71,6 +71,7 @@ describe('GET /stats', () => {
 
                 resolve();
             });
+		B
         });
     });
 

@@ -24,7 +24,7 @@ class DBClient {
 
   async nbUsers() {
     const usersCollection = this.client.db(this.database).collection('users');
-    const count = usersCollection.countDocuments();
+    const count = await usersCollection.countDocuments();
     return count;
   }
 
