@@ -1,7 +1,7 @@
-const { ObjectId } = require('mongodb');
+// const { ObjectId } = require('mongodb');
+const sha1 = require('sha1');
 const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
-const sha1 = require('sha1');
 
 const UsersController = {
   async postNew(req, res) {
@@ -29,10 +29,10 @@ const UsersController = {
       const result = await dbClient.users.insertOne(newUser);
       newUser.id = result.insertedId;
 
-      res.status(201).json({ email: newUser.email, id: newUser.id });
+      return res.status(201).json({ email: newUser.email, id: newUser.id });
     } catch (error) {
       console.error('Error creating user:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
 
@@ -59,7 +59,7 @@ const UsersController = {
       console.error('Error retrieving user:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-  }
+  },
 };
 
 module.exports = UsersController;
