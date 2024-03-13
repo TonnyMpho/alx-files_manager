@@ -10,16 +10,20 @@ class DBClient {
       useUnifiedTopology: true,
     });
 
+    this.connected = false;
     this.client.connect((err) => {
       if (err) {
         console.log(err);
+        this.connected = false;
+      } else {
+        this.connected = true;
       }
     });
     this.database = database;
   }
 
   async isAlive() {
-    return this.client.isConnected();
+    return this.connected;
   }
 
   async nbUsers() {
