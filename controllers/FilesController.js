@@ -1,11 +1,16 @@
+const { ObjectId } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { ObjectId } = require('mongodb');
 const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
 
 const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
+
+async function getUserIdFromToken(token) {
+  const userId = await redisClient.get(`auth_${token}`);
+  return userId;
+}
 
 const FilesController = {
   async postUpload(req, res) {
@@ -27,7 +32,7 @@ const FilesController = {
 
     try {
       // Retrieve user based on token
-      const userId = await redisClient.get(`auth_${token}`);
+      const userId = await getUserIdFromToken(token);
       if (!userId) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
@@ -57,13 +62,13 @@ const FilesController = {
         userId,
         name,
         type,
-        parentId,
         isPublic,
+        parentId,
         localPath: localPath || null,
       };
 
       // Insert new file document into the database
-      const result = await dbClient.files.insertOne(newFile);
+      const result = await dbClient.filesCollection.insertOne(newFile);
       newFile.id = result.insertedId;
 
       return res.status(201).json(newFile);
