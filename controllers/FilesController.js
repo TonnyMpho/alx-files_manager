@@ -1,9 +1,9 @@
-// controllers/FilesController.js
-
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const dbClient = require('../utils/db');
+const redisClient = require('../utils/redis');
+const { ObjectId } = require('mongodb');
 
 const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
 
@@ -27,14 +27,14 @@ const FilesController = {
 
     try {
       // Retrieve user based on token
-      const userId = await getUserIdFromToken(token);
+      const userId = await redisClient.get(`auth_${token}`);
       if (!userId) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
       // If parentId is set, validate it
       if (parentId !== 0) {
-        const parentFile = await dbClient.files.findOne({ _id: parentId });
+        const parentFile = await dbClient.files.findOne({ _id: ObjectId(parentId) });
         if (!parentFile) {
           return res.status(400).json({ error: 'Parent not found' });
         }
