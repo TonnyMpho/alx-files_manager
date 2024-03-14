@@ -83,6 +83,54 @@ const FilesController = {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
+async getShow(req, res) {
+    const { 'x-token': token } = req.headers;
+    const { id } = req.params;
+
+    try {
+      // Retrieve user based on token
+      const userId = await getUserIdFromToken(token);
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      // Find file document by ID and user ID
+      const file = await dbClient.filesCollection.findOne({ _id: id, userId });
+      if (!file) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+
+      return res.json(file);
+    } catch (error) {
+      console.error('Error retrieving file:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+
+  async getIndex(req, res) {
+    const { 'x-token': token } = req.headers;
+    const { parentId = 0, page = 0 } = req.query;
+
+    try {
+      // Retrieve user based on token
+      const userId = await getUserIdFromToken(token);
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      // Perform pagination and retrieve files for the specified parentId
+      const files = await dbClient.filesCollection
+        .find({ userId, parentId })
+        .skip(parseInt(page) * 20)
+        .limit(20)
+        .toArray();
+
+      return res.json(files);
+    } catch (error) {
+      console.error('Error retrieving files:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
 };
 
 module.exports = FilesController;
