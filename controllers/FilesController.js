@@ -83,7 +83,7 @@ const FilesController = {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
-async getShow(req, res) {
+  async getShow(req, res) {
     const { 'x-token': token } = req.headers;
     const { id } = req.params;
 
@@ -95,7 +95,7 @@ async getShow(req, res) {
       }
 
       // Find file document by ID and user ID
-      const file = await dbClient.filesCollection.findOne({ _id: id, userId });
+      const file = await dbClient.files.findOne({ _id: id, userId });
       if (!file) {
         return res.status(404).json({ error: 'Not found' });
       }
@@ -119,9 +119,9 @@ async getShow(req, res) {
       }
 
       // Perform pagination and retrieve files for the specified parentId
-      const files = await dbClient.filesCollection
+      const files = await dbClient.files
         .find({ userId, parentId })
-        .skip(parseInt(page) * 20)
+        .skip(parseInt(page, 10) * 20)
         .limit(20)
         .toArray();
 
